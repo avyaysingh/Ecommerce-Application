@@ -1,0 +1,62 @@
+package com.avyay.user_service.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.avyay.user_service.dto.UserRequest;
+import com.avyay.user_service.dto.UserResponse;
+import com.avyay.user_service.services.UserService;
+
+@RestController
+@RequestMapping("/users")
+public class UserController {
+
+    @Autowired
+    UserService userService;
+
+    @GetMapping("/all")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<UserResponse> getAll() {
+        return userService.getAll();
+    }
+
+    @GetMapping("/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ADMIN')")
+    public UserResponse getByUserId(@PathVariable Long userId) {
+        return userService.getByUserId(userId);
+    }
+
+    @GetMapping("/search/{keywords}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ADMIN')")
+    public UserResponse searchUser(@PathVariable String keywords) {
+        return userService.searchUser(keywords);
+    }
+
+    @PutMapping("/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ADMIN')")
+    public void updateUserById(@RequestBody UserRequest userRequest) {
+        userService.updateUserById(userRequest);
+    }
+
+    @DeleteMapping("/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deleteUser(@PathVariable Long userId) {
+        userService.deleteUser(userId);
+    }
+}
