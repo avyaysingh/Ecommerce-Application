@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: e-commerce
+  output:
+    ansi:
+      enabled: always
+  datasource:
+    url: jdbc:mysql://localhost:3306/ecommerce
+    username: root
+    password: Avyay@1999
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate.ddl-auto: update
+
+server:
+  port: 8082
