@@ -34,7 +34,7 @@ public class UserSecurityConfig {
                 .csrf((csrf) -> csrf.disable())
                 .authorizeHttpRequests(authz -> authz.requestMatchers("/api/auth/signin", "/api/auth/signup")
                         .permitAll()
-                        .requestMatchers("/api/users/username/**").hasAnyRole("CUSTOMER", "ADMIN").anyRequest()
+                        .anyRequest()
                         .authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 

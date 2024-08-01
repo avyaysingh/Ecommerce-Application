@@ -73,15 +73,6 @@ public class UserController {
     @Autowired
     private CustomUserDetailsService userDetailsService;
 
-    // @GetMapping("/username/{username}")
-    // @PreAuthorize("hasAnyRole('CUSTOMER', 'ADMIN')")
-    // public ResponseEntity<UserDetailsResponse>
-    // getUserDetailsByUsername(@PathVariable String username) {
-    // System.out.println(username);
-    // UserDetailsResponse userDetails =
-    // userDetailsService.getUserDetailsByUsername(username);
-    // return ResponseEntity.ok(userDetails);
-    // }
 
     @GetMapping("/username/{username}")
     @PreAuthorize("hasAnyRole('CUSTOMER', 'ADMIN')")
