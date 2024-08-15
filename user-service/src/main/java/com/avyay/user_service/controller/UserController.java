@@ -77,9 +77,9 @@ public class UserController {
     @GetMapping("/username/{username}")
     @PreAuthorize("hasAnyRole('CUSTOMER', 'ADMIN')")
     public ResponseEntity<UserDetails> getUserDetailsByUsername(@PathVariable String username) {
-        System.out.println(username);
+        // System.out.println(username);
 
-        System.out.println("Find By Username");
+        // System.out.println("Find By Username");
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         return ResponseEntity.ok(userDetails);
     }

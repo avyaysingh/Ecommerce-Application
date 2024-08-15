@@ -49,7 +49,4 @@ public class AuthController {
         return userServiceClient.signup(signupRequest);
     }
 
-    private String obtainTokenSomehow(){
-        return (String) session.getAttribute("token");
-    }
 }

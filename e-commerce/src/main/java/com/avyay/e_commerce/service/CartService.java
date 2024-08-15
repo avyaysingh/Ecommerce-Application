@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import com.avyay.e_commerce.dto.CartDTO;
@@ -13,9 +14,11 @@ import com.avyay.e_commerce.entity.CartItem;
 import com.avyay.e_commerce.entity.Product;
 import com.avyay.e_commerce.exception.ProductNotFoundException;
 import com.avyay.e_commerce.exception.ResourceNotFoundException;
+import com.avyay.e_commerce.exception.UnauthorizedException;
 import com.avyay.e_commerce.repository.CartItemRepository;
 import com.avyay.e_commerce.repository.CartRepository;
 import com.avyay.e_commerce.repository.ProductRepository;
+import com.avyay.e_commerce.repository.UserRepository;
 
 @Service
 public class CartService {
@@ -29,7 +32,15 @@ public class CartService {
     @Autowired
     private CartItemRepository cartItemRepository;
 
-    public CartDTO createCart(CartDTO cartDTO) {
+    @Autowired
+    private UserRepository userRepository;
+
+    public CartDTO createCart(CartDTO cartDTO, Authentication authentication) {
+
+        if (!isUserAuthenticated(cartDTO.getUserId(), authentication)) {
+            throw new UnauthorizedException("You are not authorized to perform this action");
+        }
+
         Cart cart = cartRepository.findByUserId(cartDTO.getUserId()).orElse(new Cart());
         cart.setUserId(cartDTO.getUserId());
 
@@ -74,14 +85,22 @@ public class CartService {
         return convertCartToDTO(savedCart);
     }
 
-    public CartDTO getCartById(Long userId) {
+    public CartDTO getCartById(Long userId, Authentication authentication) {
+
+        if (!isUserAuthenticated(userId, authentication)) {
+            throw new UnauthorizedException("You are not authorized to perform this action");
+        }
         Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cart Not Found"));
 
         return convertCartToDTO(cart);
     }
 
-    public CartDTO updateCart(Long userId, CartItemDTO cartItemDTO) {
+    public CartDTO updateCart(Long userId, CartItemDTO cartItemDTO, Authentication authentication) {
+
+        if (!isUserAuthenticated(userId, authentication)) {
+            throw new UnauthorizedException("You are not authorized to perform this action");
+        }
         Cart existingCart = cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cart Not found for user"));
 
@@ -129,7 +148,11 @@ public class CartService {
         cartRepository.save(cart);
     }
 
-    // Helper function
+    // Helper functions
+
+    private boolean isUserAuthenticated(Long userId, Authentication authentication) {
+        return authentication.getName().equals(userRepository.findUsernameById(userId).get().getUsername());
+    }
 
     private CartDTO convertCartToDTO(Cart cart) {
 

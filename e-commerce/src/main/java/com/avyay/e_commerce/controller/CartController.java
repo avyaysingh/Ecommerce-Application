@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.avyay.e_commerce.dto.CartDTO;
 import com.avyay.e_commerce.dto.CartItemDTO;
-import com.avyay.e_commerce.exception.UnauthorizedException;
-import com.avyay.e_commerce.feign.UserServiceClient;
 import com.avyay.e_commerce.service.CartService;
 
 @RestController
@@ -27,34 +25,20 @@ public class CartController {
     @Autowired
     private CartService cartService;
 
-    @Autowired
-    private UserServiceClient userServiceClient;
-
     @PostMapping("/add")
     @PreAuthorize("hasAnyRole('CUSTOMER', 'ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     public CartDTO createCart(@RequestBody CartDTO cartDTO, Authentication authentication) {
-        String currentUsername = authentication.getName();
 
-        String authenticatedUsername = userServiceClient.findUsernameById(cartDTO.getUserId()).getBody();
-        if (!currentUsername.equals(authenticatedUsername)) {
-            throw new UnauthorizedException("You are not authorized to perform this action");
-        }
-
-        return cartService.createCart(cartDTO);
+        return cartService.createCart(cartDTO, authentication);
     }
 
     @GetMapping("/get/{userId}")
     @PreAuthorize("hasAnyRole('CUSTOMER', 'ADMIN')")
     @ResponseStatus(HttpStatus.OK)
     public CartDTO getCartById(@PathVariable Long userId, Authentication authentication) {
-        String currentUsername = authentication.getName();
 
-        String authenticatedUsername = userServiceClient.findUsernameById(userId).getBody();
-        if (!currentUsername.equals(authenticatedUsername)) {
-            throw new UnauthorizedException("You are not authorized to perform this action");
-        }
-        return cartService.getCartById(userId);
+        return cartService.getCartById(userId, authentication);
     }
 
     @PutMapping("/update/{userId}")
@@ -62,15 +46,8 @@ public class CartController {
     @ResponseStatus(HttpStatus.OK)
     public CartDTO updateCart(@PathVariable Long userId, @RequestBody CartItemDTO cartItemDTO,
             Authentication authentication) {
-        String currentUsername = authentication.getName();
 
-        String authenticatedUsername = userServiceClient.findUsernameById(userId).getBody();
-
-        if (!currentUsername.equals(authenticatedUsername)) {
-            throw new UnauthorizedException("You are not authorized to perform this action");
-        }
-
-        return cartService.updateCart(userId, cartItemDTO);
+        return cartService.updateCart(userId, cartItemDTO, authentication);
     }
 
     @DeleteMapping("/delete/{cartItemId}")

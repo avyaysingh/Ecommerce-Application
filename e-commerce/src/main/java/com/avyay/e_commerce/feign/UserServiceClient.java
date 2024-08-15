@@ -11,7 +11,6 @@ import com.avyay.e_commerce.dto.LoginRequest;
 import com.avyay.e_commerce.dto.LoginResponse;
 import com.avyay.e_commerce.dto.MessageResponse;
 import com.avyay.e_commerce.dto.SignupRequest;
-import com.avyay.e_commerce.dto.User;
 
 import jakarta.validation.Valid;
 
@@ -26,8 +25,5 @@ public interface UserServiceClient {
 
     @GetMapping("/api/users/{userId}/username")
     public ResponseEntity<String> findUsernameById(@PathVariable Long userId);
-
-    @GetMapping("/api/users/username/{username}")
-    public ResponseEntity<User> getUserDetailsByUsername(@PathVariable String username);
 
 }
